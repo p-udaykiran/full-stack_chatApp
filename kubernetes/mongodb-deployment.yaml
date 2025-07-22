@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deployment
+  namespace: chatapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb #Label to match pods managed by this deployment
+  template:
+    metadata:
+      name: mongodb-pod
+      namespace: chatapp
+      labels:
+        app: mongodb  # ✅ This must match the selector above (was "mongodb-pod")
+    spec:
+      containers:
+      - name: mongodb-data
+        image: mongo:4.4  # Using official MongoDB image
+        ports:
+        - containerPort: 27017  # Default MongoDB port
+
+        env:  # Environment variables for MongoDB initialization
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: mongoadmin
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: root
+
+        volumeMounts:  # ✅ Mount the volume inside the container
+        - name: mongodb-data
+          mountPath: /data/db  # MongoDB default data directory
+
+      volumes:
+      - name: mongodb-data
+        persistentVolumeClaim:  # ✅ Correct key is lowercase 'persistentVolumeClaim'
+          claimName: pvc  # Name of the PVC to bind to
+          

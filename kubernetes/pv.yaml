@@ -1,0 +1,13 @@
+apiVersion: v1                # API version for PersistentVolume resources
+kind: PersistentVolume        # Declares this resource is a PersistentVolume (PV)
+metadata:
+  name: pv                    # Name of the PV
+  namespace: chatapp          # Namespace (NOTE: PVs are cluster-scoped, namespace is ignored here)
+spec:
+  capacity:
+    storage: 5Gi              # Total storage size of the volume (5 Gigabytes)
+  accessModes:
+    - ReadWriteOnce           # Only one node can mount this volume in read-write mode at a time
+  hostPath:
+    path: /data               # Path on the host machine (node) where the data will be stored
+                              # This is suitable for local dev/testing only (not recommended for production)
